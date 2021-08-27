@@ -12,7 +12,7 @@ const pokemonRouter = require("./routes/pokemons.route");
 app.use("/pokemon", pokemonRouter);
 
 const trainersRouter = require("./routes/trainers.js");
-app.use("/trainers", trainersRoutes);
+app.use("/trainers", trainersRouter);
 
 db.sequelize.sync();
 
