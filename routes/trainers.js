@@ -1,6 +1,6 @@
 const express = require("express");
 const db = require("../db/models/index");
-
+const { auth } = require("../middleware/auth"); // auth middleware for authentication
 const router = express.Router();
 
 // Add POST /trainers route
@@ -38,6 +38,9 @@ router.get("/search/:username", async (req, res, next) => {
     // e.g. "Sa" will return Samantha, Samuel..
     const trainer = await db.Trainer.findAll({
       where: { username: { [db.Sequelize.Op.iLike]: "%" + username + "%" } },
+      attributes: {
+        exclude: ["password"],
+      },
     });
     res.send(trainer);
   } catch (err) {
