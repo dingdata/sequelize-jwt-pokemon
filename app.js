@@ -17,4 +17,8 @@ app.use((err, req, res, next) => {
   res.status(err.statusCode).send(err.message);
 });
 
+// app.js Using a cookie Parser
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
 module.exports = app;
