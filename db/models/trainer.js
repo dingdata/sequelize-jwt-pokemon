@@ -26,6 +26,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
+      defaultScope: {
+        attributes: { exclude: ["password"] },
+      },
       modelName: "Trainer",
       hooks: {
         // add beforeCreate hook here

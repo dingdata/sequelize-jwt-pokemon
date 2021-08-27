@@ -19,12 +19,7 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     //const trainers = await db.Trainer.findAll();
-    const trainers = await db.Trainer.findAll({
-      // exclude password field
-      attributes: {
-        exclude: ["password"],
-      },
-    });
+    const trainers = await db.Trainer.findAll();
 
     res.json(trainers);
   } catch (err) {
@@ -40,9 +35,6 @@ router.get("/search/:username", auth, async (req, res, next) => {
     // e.g. "Sa" will return Samantha, Samuel..
     const trainer = await db.Trainer.findAll({
       where: { username: { [db.Sequelize.Op.iLike]: "%" + username + "%" } },
-      attributes: {
-        exclude: ["password"],
-      },
     });
     res.send(trainer);
   } catch (err) {
@@ -58,6 +50,9 @@ router.post("/login", async (req, res, next) => {
     // findOne is a function to find exact
     const trainer = await db.Trainer.findOne({
       where: { username },
+      attributes: {
+        include: ["password"],
+      },
     });
 
     // return if Trainer does not exist
