@@ -26,6 +26,7 @@ router.post("/create", async (req, res, next) => {
 
 router.get("/search", async (req, res, next) => {
   //http://localhost:3000/pokemon/search?id=2&name=poke
+
   const pokemonId = req.query.id;
   const name = req.query.name;
   console.log(`this is pokemon ${pokemonId} - ${name}`);
@@ -63,6 +64,44 @@ router.delete("/:id", async (req, res, next) => {
       },
     });
     res.status(200).json(pokemons);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/update/:id", async (req, res, next) => {
+  try {
+    const idToUpdate = req.params.id;
+    const reqBody = req.body;
+
+    const [numberOfUpdatedRecord, updatedRecord] = await db.Pokemon.update(
+      reqBody,
+      {
+        where: {
+          id: idToUpdate,
+        },
+        returning: true,
+      }
+    );
+    const returnMessage = `Number of Records Updated ${numberOfUpdatedRecord}`;
+    console.log(numberOfUpdatedRecord);
+    res.status(201).json({
+      message: `${returnMessage} Updated ${updatedRecord} successfully!`,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put("/:id", async (req, res, next) => {
+  try {
+    const pokemonId = req.params.id;
+    const pokemonToUpdate = await db.Pokemon.findByPk(pokemonId);
+
+    if (pokemonToUpdate === null) return res.sendStatus(404);
+    await pokemonToUpdate.update(req.body);
+
+    res.json(pokemonToUpdate);
   } catch (error) {
     next(error);
   }
