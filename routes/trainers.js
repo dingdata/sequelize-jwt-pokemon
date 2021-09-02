@@ -43,6 +43,32 @@ router.get("/search/:username", auth, async (req, res, next) => {
   }
 });
 
+router.get("/getPokemonsByTrainer", auth, async (req, res) => {
+  try {
+    const trainer = await db.Trainer.findOne({
+      where: {
+        username: req.user.username,
+      },
+      raw: true,
+    });
+    console.log(req.user.username);
+    console.log(trainer.id);
+    const trainerWithPokemons = await db.Trainer.findOne({
+      where: {
+        id: trainer.id,
+      },
+      include: {
+        model: db.Pokemon,
+      },
+    });
+
+    res.json(trainerWithPokemons.Pokemons);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 //------Added login-----logout------
 router.post("/login", async (req, res, next) => {
   try {
